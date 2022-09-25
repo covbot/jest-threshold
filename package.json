@@ -8,6 +8,9 @@
 	"author": "Artiom Tretjakovas <artiom.tretjakovas2@gmail.com>",
 	"license": "MIT",
 	"homepage": "https://github.com/covbot/jest-threshold#readme",
+	"publishConfig": {
+		"access": "public"
+	},
 	"repository": {
 		"type": "git",
 		"url": "git+https://github.com/covbot/jest-threshold.git"
