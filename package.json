@@ -1,5 +1,5 @@
 {
-	"name": "jest-threshold",
+	"name": "@covbot/jest-threshold",
 	"version": "0.0.0",
 	"description": "",
 	"main": "./dist/index.js",
