@@ -25,14 +25,18 @@ jobs:
               with:
                   node-version: ${{ matrix.node }}
 
-            - name: Install deps and build (with cache)
-              uses: bahmutov/npm-install@v1
+            - uses: pnpm/action-setup@v2.2.4
+              with:
+                  version: 7.4.0
+
+            - name: Install dependencies
+              run: pnpm i
 
             - name: Lint
-              run: yarn lint
+              run: pnpm lint
 
             - name: Test
-              run: yarn test --ci --coverage --maxWorkers=2
+              run: pnpm test --ci --coverage --maxWorkers=2
 
             - name: Build
-              run: yarn build
+              run: pnpm build
