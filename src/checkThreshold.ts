@@ -4,8 +4,8 @@
  * It was refactored a bit to suit project's needs.
  */
 
-import fs from 'node:fs';
-import { resolve, sep } from 'node:path';
+import fs from 'fs';
+import path from 'path';
 import fastGlob from 'fast-glob';
 import {
 	CoverageMap,
@@ -32,12 +32,12 @@ enum ThresholdGroupType {
  * @returns Absolute threshold group specifier.
  */
 const getAbsoluteThresholdGroup = (thresholdGroup: string): string => {
-	const resolvedThresholdGroup = resolve(thresholdGroup);
+	const resolvedThresholdGroup = path.resolve(thresholdGroup);
 
 	const isWindowsPlatform = process.platform === 'win32';
 
 	// If it is not windows, then path should always end with system separator.
-	if (!thresholdGroup.endsWith(sep) && !isWindowsPlatform) {
+	if (!thresholdGroup.endsWith(path.sep) && !isWindowsPlatform) {
 		return resolvedThresholdGroup;
 	}
 
@@ -47,11 +47,11 @@ const getAbsoluteThresholdGroup = (thresholdGroup: string): string => {
 	}
 
 	// If resolved threshold group already ends with a separator, don't add another one.
-	if (resolvedThresholdGroup.endsWith(sep)) {
+	if (resolvedThresholdGroup.endsWith(path.sep)) {
 		return resolvedThresholdGroup;
 	}
 
-	return resolvedThresholdGroup + sep;
+	return resolvedThresholdGroup + path.sep;
 };
 
 const createGlobWithCache = () => {
@@ -63,7 +63,7 @@ const createGlobWithCache = () => {
 		}
 
 		const files = await fastGlob(pattern.replace(/\\/g, '/'), { fs });
-		const resolvedFiles = files.map((path) => resolve(path));
+		const resolvedFiles = files.map((file) => path.resolve(file));
 		cacheStore.set(pattern, resolvedFiles);
 		return resolvedFiles;
 	};
