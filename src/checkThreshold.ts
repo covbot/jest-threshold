@@ -14,31 +14,10 @@ import {
 	createCoverageSummary,
 	FileCoverage,
 } from 'istanbul-lib-coverage';
-import { Threshold, ThresholdGroupMap, ThresholdGroupResult, ThresholdType } from './types';
+import { Threshold, ThresholdGroupMap, ThresholdGroupResult, ThresholdGroupType, ThresholdType } from './types';
 import type { Config } from '@jest/types';
 
 export type CheckThresholdResult = Record<string, ThresholdGroupResult>;
-
-/**
- * Classify threshold groups into subgroups. This classification describes, which algorithm should be used to
- * validate thresholds.
- */
-enum ThresholdGroupType {
-	/**
-	 * A glob pattern threshold group. Algorithm will perform separate checks for each file, that was matched by glob.
-	 */
-	GLOB = 'glob',
-	/**
-	 * A path threshold group. Could be a single file or a directory. All coverage summaries for files, that were
-	 * matched by path, will be merged into one summary. Merged summary will be checked by specified threshold values.
-	 */
-	PATH = 'path',
-	/**
-	 * All unmatched files group. All summaries of files, that were not matched by other threshold group, will be
-	 * conducted into one summary. Merged summary will be checked by specified threshold values.
-	 */
-	GLOBAL = 'global',
-}
 
 /**
  * Function, which takes threshold group specifier from configuration, and returns it's absolute path,
@@ -162,13 +141,6 @@ const mergeFileCoverages = (coverages: FileCoverage[]): CoverageSummary => {
 };
 
 /**
- * Create check results for a situation, where there is a lack of coverage information to check threshold group.
- * @returns The ThresholdGroupMap object, where all threshold check results are of type 'empty'.
- */
-const createEmptyChecks = (): ThresholdGroupMap =>
-	Object.fromEntries(summaryKeys.map((key) => [key, { type: ThresholdType.EMPTY }])) as ThresholdGroupMap;
-
-/**
  * Validate threshold against specified coverage map. Returns an object, containing results on each threshold group.
  * @param coverageMap Istanbul coverage map.
  * @param threshold Thresholds from jest configuration file.
@@ -222,19 +194,24 @@ export const checkThreshold = async (coverageMap: CoverageMap, threshold: Thresh
 
 		switch (type) {
 			// No files were matched by group - lack of coverage data detected.
+			case ThresholdGroupType.UNIDENTIFIED:
 			case undefined:
-				result[group] = { group, checks: createEmptyChecks() };
+				result[group] = { group, type: ThresholdGroupType.UNIDENTIFIED };
 				break;
 			// Group is a glob - run threshold checks on each file.
 			case ThresholdGroupType.GLOB:
-				for (const file of filesByGroup[group]) {
-					const summary = coverageMap.fileCoverageFor(file).toSummary();
-					const checks = checkSingleThresholdGroup(summary, threshold[group]!);
-					// FIXME: only last file matched by glob will be saved into results.
-					result[group] = {
+				{
+					const groupResult: ThresholdGroupResult = {
+						type: ThresholdGroupType.GLOB,
 						group,
-						checks,
+						checks: {},
 					};
+					for (const file of filesByGroup[group]) {
+						const summary = coverageMap.fileCoverageFor(file).toSummary();
+						const checks = checkSingleThresholdGroup(summary, threshold[group]!);
+						groupResult.checks[file] = checks;
+					}
+					result[group] = groupResult;
 				}
 				break;
 			// Group is a PATH or GLOBAL specifier - merge coverage summaries and run check.
@@ -242,6 +219,7 @@ export const checkThreshold = async (coverageMap: CoverageMap, threshold: Thresh
 			case ThresholdGroupType.GLOBAL:
 				result[group] = {
 					group,
+					type,
 					checks: checkSingleThresholdGroup(
 						mergeFileCoverages(
 							filesByGroup[group].map((filename) => coverageMap.fileCoverageFor(filename)),

@@ -6,6 +6,7 @@ import { checkThreshold } from '../src/checkThreshold';
 import { resolve } from 'path';
 import mockFs from 'mock-fs';
 import { CoverageMap, CoverageSummary, createCoverageSummary, FileCoverage } from 'istanbul-lib-coverage';
+import { ThresholdResult } from '../src/types';
 
 beforeEach(() => {
 	mockFs({
@@ -92,6 +93,7 @@ describe('checkThreshold', () => {
 		expect(result).toStrictEqual({
 			global: {
 				group: 'global',
+				type: 'global',
 				checks: {
 					statements: {
 						pass: false,
@@ -133,6 +135,7 @@ describe('checkThreshold', () => {
 			global: expect.anything(),
 			[absolutePath]: {
 				group: absolutePath,
+				type: 'path',
 				checks: {
 					statements: {
 						pass: false,
@@ -152,6 +155,7 @@ describe('checkThreshold', () => {
 				},
 			},
 			[relativePath]: {
+				type: 'path',
 				group: relativePath,
 				checks: {
 					statements: {
@@ -194,6 +198,7 @@ describe('checkThreshold', () => {
 			global: expect.anything(),
 			[absolutePath]: {
 				group: absolutePath,
+				type: 'path',
 				checks: {
 					statements: {
 						pass: true,
@@ -214,6 +219,7 @@ describe('checkThreshold', () => {
 			},
 			[relativePath]: {
 				group: relativePath,
+				type: 'path',
 				checks: {
 					statements: {
 						pass: true,
@@ -246,20 +252,7 @@ describe('checkThreshold', () => {
 		expect(result).toStrictEqual({
 			[filepath]: {
 				group: filepath,
-				checks: {
-					statements: {
-						type: 'empty',
-					},
-					branches: {
-						type: 'empty',
-					},
-					functions: {
-						type: 'empty',
-					},
-					lines: {
-						type: 'empty',
-					},
-				},
+				type: 'unidentified',
 			},
 		});
 	});
@@ -275,6 +268,7 @@ describe('checkThreshold', () => {
 		expect(result).toStrictEqual({
 			[filepath]: {
 				group: filepath,
+				type: 'path',
 				checks: {
 					statements: {
 						pass: false,
@@ -307,6 +301,7 @@ describe('checkThreshold', () => {
 		expect(result).toStrictEqual({
 			[filepath]: {
 				group: filepath,
+				type: 'path',
 				checks: {
 					statements: {
 						pass: true,
@@ -339,20 +334,7 @@ describe('checkThreshold', () => {
 		expect(result).toStrictEqual({
 			[filepath]: {
 				group: filepath,
-				checks: {
-					statements: {
-						type: 'empty',
-					},
-					branches: {
-						type: 'empty',
-					},
-					functions: {
-						type: 'empty',
-					},
-					lines: {
-						type: 'empty',
-					},
-				},
+				type: 'unidentified',
 			},
 		});
 	});
@@ -376,6 +358,7 @@ describe('checkThreshold', () => {
 			expect(result).toStrictEqual({
 				['./path-test-files/']: {
 					group: './path-test-files/',
+					type: 'path',
 					checks: {
 						statements: {
 							threshold: 50,
@@ -396,6 +379,7 @@ describe('checkThreshold', () => {
 				},
 				['./path-test/']: {
 					group: './path-test/',
+					type: 'path',
 					checks: {
 						statements: {
 							threshold: 100,
@@ -416,20 +400,7 @@ describe('checkThreshold', () => {
 				},
 				global: {
 					group: 'global',
-					checks: {
-						statements: {
-							type: 'empty',
-						},
-						branches: {
-							type: 'empty',
-						},
-						functions: {
-							type: 'empty',
-						},
-						lines: {
-							type: 'empty',
-						},
-					},
+					type: 'unidentified',
 				},
 			});
 		},
@@ -453,14 +424,28 @@ describe('checkThreshold', () => {
 
 		const result = await checkThreshold(coverageMap, covThreshold);
 		let passed = true;
-		for (const [group, { checks }] of Object.entries(result)) {
-			for (const check of Object.values(checks)) {
-				if (check.type === 'empty' && group !== 'global') {
+		for (const groupResult of Object.values(result)) {
+			if (groupResult.type === 'unidentified') {
+				if (groupResult.group !== 'global') {
 					passed = false;
 					break;
 				}
 
-				if (check.type !== 'unspecified' && check.type !== 'empty' && !check.pass) {
+				continue;
+			}
+
+			const arrayToCheck: Array<ThresholdResult> = [];
+
+			if (groupResult.type === 'glob') {
+				for (const fileResult of Object.values(groupResult.checks)) {
+					arrayToCheck.push(...Object.values(fileResult));
+				}
+			} else {
+				arrayToCheck.push(...Object.values(groupResult.checks));
+			}
+
+			for (const check of arrayToCheck) {
+				if (check.type !== 'unspecified' && !check.pass) {
 					passed = false;
 					break;
 				}
@@ -493,6 +478,7 @@ describe('checkThreshold', () => {
 			expect(result).toStrictEqual({
 				'./path-test-files/100pc_coverage_file.js': {
 					group: './path-test-files/100pc_coverage_file.js',
+					type: 'path',
 					checks: {
 						statements: {
 							threshold: 100,
@@ -513,6 +499,7 @@ describe('checkThreshold', () => {
 				},
 				'./path-test/100pc_coverage_file.js': {
 					group: './path-test/100pc_coverage_file.js',
+					type: 'path',
 					checks: {
 						statements: {
 							threshold: 100,
@@ -533,6 +520,7 @@ describe('checkThreshold', () => {
 				},
 				global: {
 					group: 'global',
+					type: 'global',
 					checks: {
 						statements: {
 							threshold: 50,
@@ -554,4 +542,59 @@ describe('checkThreshold', () => {
 			});
 		},
 	);
+
+	it('should unwrap glob pattern, and output threshold checks on each file, matching glob', async () => {
+		const filepath = './path-test-files/glob-path/*.js';
+		const result = await checkThreshold(coverageMap, {
+			[filepath]: {
+				statements: 100,
+			},
+		});
+
+		const file1 = resolve(process.cwd(), './path-test-files/glob-path/file1.js');
+		const file2 = resolve(process.cwd(), './path-test-files/glob-path/file2.js');
+
+		expect(result).toStrictEqual({
+			[filepath]: {
+				group: filepath,
+				type: 'glob',
+				checks: {
+					[file1]: {
+						statements: {
+							pass: false,
+							threshold: 100,
+							actual: 50,
+							type: 'percentage',
+						},
+						branches: {
+							type: 'unspecified',
+						},
+						functions: {
+							type: 'unspecified',
+						},
+						lines: {
+							type: 'unspecified',
+						},
+					},
+					[file2]: {
+						statements: {
+							pass: false,
+							threshold: 100,
+							actual: 50,
+							type: 'percentage',
+						},
+						branches: {
+							type: 'unspecified',
+						},
+						functions: {
+							type: 'unspecified',
+						},
+						lines: {
+							type: 'unspecified',
+						},
+					},
+				},
+			},
+		});
+	});
 });
