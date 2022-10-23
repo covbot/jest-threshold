@@ -7,7 +7,14 @@
 import fs from 'node:fs';
 import { resolve, sep } from 'node:path';
 import fastGlob from 'fast-glob';
-import { FileCoverageSummary, Threshold } from './types';
+import {
+	CoverageMap,
+	CoverageSummary,
+	CoverageSummaryData,
+	createCoverageSummary,
+	FileCoverage,
+} from 'istanbul-lib-coverage';
+import { Threshold } from './types';
 import type { Config } from '@jest/types';
 
 /**
@@ -53,7 +60,7 @@ export type ThresholdResult =
 			type: ThresholdType.EMPTY;
 	  };
 
-export type ThresholdGroupMap = Record<keyof FileCoverageSummary, ThresholdResult>;
+export type ThresholdGroupMap = Record<keyof CoverageSummaryData, ThresholdResult>;
 
 export type ThresholdGroupResult = {
 	group: string;
@@ -112,10 +119,10 @@ const createGlobWithCache = () => {
 	};
 };
 
-const summaryKeys = ['statements', 'branches', 'lines', 'functions'] as Array<keyof FileCoverageSummary>;
+const summaryKeys = ['statements', 'branches', 'lines', 'functions'] as Array<keyof CoverageSummaryData>;
 
 const checkSingleThreshold = (
-	summary: FileCoverageSummary,
+	summary: CoverageSummary,
 	thresholds: Config.CoverageThresholdValue,
 ): ThresholdGroupMap => {
 	const result: Partial<ThresholdGroupMap> = {};
@@ -158,45 +165,19 @@ const checkSingleThreshold = (
 	return result as ThresholdGroupMap;
 };
 
-const mergeSummaries = (summaries: Array<FileCoverageSummary>) => {
-	const total: FileCoverageSummary = {
-		branches: {
-			total: 0,
-			covered: 0,
-		},
-		functions: {
-			total: 0,
-			covered: 0,
-		},
-		lines: {
-			total: 0,
-			covered: 0,
-		},
-		statements: {
-			total: 0,
-			covered: 0,
-		},
-	};
+const mergeSummaries = (coverages: FileCoverage[]): CoverageSummary => {
+	const emptySummary = createCoverageSummary();
 
-	for (const summary of summaries) {
-		for (const key of summaryKeys) {
-			total[key].total += summary[key].total;
-			total[key].covered += summary[key].covered;
-		}
-	}
-
-	return total;
+	// eslint-disable-next-line unicorn/no-array-reduce
+	return coverages.reduce((summary, coverage) => summary.merge(coverage.toSummary()), emptySummary);
 };
 
 const createEmptyChecks = (): ThresholdGroupMap =>
 	Object.fromEntries(summaryKeys.map((key) => [key, { type: ThresholdType.EMPTY }])) as ThresholdGroupMap;
 
-export const checkThreshold = async (
-	summarizedCoverageMap: Record<string, FileCoverageSummary>,
-	threshold: Threshold,
-): Promise<CheckThresholdResult> => {
+export const checkThreshold = async (coverageMap: CoverageMap, threshold: Threshold): Promise<CheckThresholdResult> => {
 	const result: CheckThresholdResult = {};
-	const coveredFiles = Object.keys(summarizedCoverageMap);
+	const coveredFiles = coverageMap.files();
 	const glob = createGlobWithCache();
 
 	const groups = Object.keys(threshold).map((initial) => [initial, getAbsoluteThresholdGroup(initial)] as const);
@@ -239,7 +220,8 @@ export const checkThreshold = async (
 				break;
 			case ThresholdGroupType.GLOB:
 				for (const file of filesByGroup[group]) {
-					const checks = checkSingleThreshold(summarizedCoverageMap[file], threshold[group]!);
+					const summary = coverageMap.fileCoverageFor(file).toSummary();
+					const checks = checkSingleThreshold(summary, threshold[group]!);
 					result[group] = {
 						group,
 						checks,
@@ -251,7 +233,7 @@ export const checkThreshold = async (
 				result[group] = {
 					group,
 					checks: checkSingleThreshold(
-						mergeSummaries(filesByGroup[group].map((file) => summarizedCoverageMap[file])),
+						mergeSummaries(filesByGroup[group].map((filename) => coverageMap.fileCoverageFor(filename))),
 						threshold[group]!,
 					),
 				};

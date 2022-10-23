@@ -1,14 +1,30 @@
 {
 	"configurations": [
 		{
-			"name": "Debug Tests",
+			"name": "Debug test file",
 			"type": "node",
 			"request": "launch",
 			"runtimeArgs": [
 				"--inspect-brk",
 				"${workspaceFolder}/node_modules/jest/bin/jest.js",
 				"--watch",
-				"${input:test}"
+				"${input:testFile}"
+			],
+			"cwd": "${workspaceFolder}",
+			"console": "integratedTerminal",
+			"internalConsoleOptions": "neverOpen"
+		},
+		{
+			"name": "Debug test case",
+			"type": "node",
+			"request": "launch",
+			"runtimeArgs": [
+				"--inspect-brk",
+				"${workspaceFolder}/node_modules/jest/bin/jest.js",
+				"--watch",
+				"${input:testFile}",
+				"-t",
+				"${input:testName}"
 			],
 			"cwd": "${workspaceFolder}",
 			"console": "integratedTerminal",
@@ -17,8 +33,14 @@
 	],
 	"inputs": [
 		{
-			"id": "test",
-			"description": "Test pattern to run:",
+			"id": "testFile",
+			"description": "Test file pattern to run:",
+			"default": "",
+			"type": "promptString"
+		},
+		{
+			"id": "testName",
+			"description": "Test name pattern to run:",
 			"default": "",
 			"type": "promptString"
 		}
