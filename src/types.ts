@@ -1,8 +1,6 @@
 import type { Config } from '@jest/types';
 import type { FileCoverageData } from 'istanbul-lib-coverage';
 
-export type CoverageMap = Record<string, FileCoverageData>;
-
 export type HitMap = FileCoverageData['f'];
 
 export type BranchHitMap = FileCoverageData['b'];
