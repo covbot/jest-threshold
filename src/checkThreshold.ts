@@ -151,13 +151,11 @@ const checkSingleThreshold = (
 			continue;
 		}
 
-		const percents = summary[key].covered / summary[key].total;
-		const thresholdPercents = threshold / 100;
-		const pass = percents >= thresholdPercents;
+		const pass = summary[key].pct >= threshold;
 		result[key] = {
 			type: ThresholdType.PERCENTAGE,
-			expected: thresholdPercents,
-			received: percents,
+			expected: threshold,
+			received: summary[key].pct,
 			pass,
 		};
 	}
