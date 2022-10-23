@@ -3,9 +3,9 @@
  * Altered to suit project's needs.
  */
 import { checkThreshold } from '../src/checkThreshold';
-import { FileCoverageSummary } from '../src/types';
 import { resolve } from 'path';
 import mockFs from 'mock-fs';
+import { CoverageMap, CoverageSummary, createCoverageSummary, FileCoverage } from 'istanbul-lib-coverage';
 
 beforeEach(() => {
 	mockFs({
@@ -30,35 +30,59 @@ beforeEach(() => {
 afterEach(() => mockFs.restore());
 
 describe('checkThreshold', () => {
-	let coverageMap: Record<string, FileCoverageSummary> = {};
+	let coverageMap: CoverageMap;
 
 	beforeEach(() => {
-		coverageMap = {};
 		const fileCoverage = [
-			['./path-test/100pc_coverage_file.js', { statements: { covered: 10, total: 10 } }],
+			['./path-test/100pc_coverage_file.js', { statements: { covered: 10, total: 10, skipped: 0, pct: 100 } }],
 			['./path-test-files/covered_file_without_threshold.js'],
 			['./path-test-files/full_path_file.js'],
 			['./path-test-files/relative_path_file.js'],
 			['./path-test-files/glob-path/file1.js'],
 			['./path-test-files/glob-path/file2.js'],
-			['./path-test-files/000pc_coverage_file.js', { statements: { covered: 0, total: 10 } }],
+			['./path-test-files/000pc_coverage_file.js', { statements: { covered: 0, total: 10, skipped: 0, pct: 0 } }],
 			['./path-test-files/050pc_coverage_file.js'],
-			['./path-test-files/100pc_coverage_file.js', { statements: { covered: 10, total: 10 } }],
+			[
+				'./path-test-files/100pc_coverage_file.js',
+				{ statements: { covered: 10, total: 10, skipped: 0, pct: 100 } },
+			],
 		] as const;
 
-		const defaultCoverage: FileCoverageSummary = {
-			branches: { covered: 0, total: 0 },
-			functions: { covered: 0, total: 0 },
-			lines: { covered: 0, total: 0 },
-			statements: { covered: 5, total: 10 },
+		const fileSummaryMap: Record<string, CoverageSummary> = {};
+
+		const defaultCoverage = {
+			branches: { covered: 0, total: 0, skipped: 0, pct: 0 },
+			functions: { covered: 0, total: 0, skipped: 0, pct: 0 },
+			lines: { covered: 0, total: 0, skipped: 0, pct: 0 },
+			statements: { covered: 5, total: 10, skipped: 0, pct: 50 },
 		};
 
-		for (const [file, coverageOverrides] of fileCoverage) {
-			coverageMap[resolve(file)] = { ...defaultCoverage, ...coverageOverrides };
+		for (const [path, overrides] of fileCoverage) {
+			fileSummaryMap[resolve(path)] = createCoverageSummary({
+				...defaultCoverage,
+				...overrides,
+			});
 		}
+
+		coverageMap = {
+			fileCoverageFor: (filename) => {
+				if (fileSummaryMap[filename]) {
+					return {
+						toSummary() {
+							return fileSummaryMap[filename];
+						},
+					} as FileCoverage;
+				}
+
+				throw new Error(`File ${filename} does not exist`);
+			},
+			files() {
+				return Object.keys(fileSummaryMap);
+			},
+		} as CoverageMap;
 	});
 
-	it('should return a failure on for global group, when threshold is not met', async () => {
+	it('should return a failure for global group, when threshold is not met', async () => {
 		const result = await checkThreshold(coverageMap, {
 			global: {
 				statements: 100,
@@ -71,8 +95,8 @@ describe('checkThreshold', () => {
 				checks: {
 					statements: {
 						pass: false,
-						expected: 1,
-						received: expect.closeTo(0.556, 3),
+						expected: 100,
+						received: 55.55,
 						type: 'percentage',
 					},
 					branches: {
@@ -112,8 +136,8 @@ describe('checkThreshold', () => {
 				checks: {
 					statements: {
 						pass: false,
-						expected: 1,
-						received: expect.closeTo(0.5, 3),
+						expected: 100,
+						received: 50,
 						type: 'percentage',
 					},
 					branches: {
@@ -132,8 +156,8 @@ describe('checkThreshold', () => {
 				checks: {
 					statements: {
 						pass: false,
-						expected: 1,
-						received: expect.closeTo(0.5, 3),
+						expected: 100,
+						received: 50,
 						type: 'percentage',
 					},
 					branches: {
@@ -173,8 +197,8 @@ describe('checkThreshold', () => {
 				checks: {
 					statements: {
 						pass: true,
-						expected: 0.5,
-						received: expect.closeTo(0.5, 3),
+						expected: 50,
+						received: 50,
 						type: 'percentage',
 					},
 					branches: {
@@ -193,8 +217,8 @@ describe('checkThreshold', () => {
 				checks: {
 					statements: {
 						pass: true,
-						expected: 0.5,
-						received: expect.closeTo(0.5, 3),
+						expected: 50,
+						received: 50,
 						type: 'percentage',
 					},
 					branches: {
@@ -254,8 +278,8 @@ describe('checkThreshold', () => {
 				checks: {
 					statements: {
 						pass: false,
-						expected: 1,
-						received: 0.5,
+						expected: 100,
+						received: 50,
 						type: 'percentage',
 					},
 					branches: {
@@ -286,8 +310,8 @@ describe('checkThreshold', () => {
 				checks: {
 					statements: {
 						pass: true,
-						expected: 0.4,
-						received: 0.5,
+						expected: 40,
+						received: 50,
 						type: 'percentage',
 					},
 					branches: {
@@ -354,8 +378,8 @@ describe('checkThreshold', () => {
 					group: './path-test-files/',
 					checks: {
 						statements: {
-							expected: 0.5,
-							received: 0.5,
+							expected: 50,
+							received: 50,
 							pass: true,
 							type: 'percentage',
 						},
@@ -374,8 +398,8 @@ describe('checkThreshold', () => {
 					group: './path-test/',
 					checks: {
 						statements: {
-							expected: 1,
-							received: 1,
+							expected: 100,
+							received: 100,
 							pass: true,
 							type: 'percentage',
 						},
@@ -410,7 +434,6 @@ describe('checkThreshold', () => {
 			});
 		},
 	);
-	jest.setTimeout(10000000);
 
 	it('should return success, when file and directory path threshold groups overlap', async () => {
 		const covThreshold: Record<string, { statements: number }> = {};
@@ -472,8 +495,8 @@ describe('checkThreshold', () => {
 					group: './path-test-files/100pc_coverage_file.js',
 					checks: {
 						statements: {
-							expected: 1,
-							received: 1,
+							expected: 100,
+							received: 100,
 							pass: true,
 							type: 'percentage',
 						},
@@ -492,8 +515,8 @@ describe('checkThreshold', () => {
 					group: './path-test/100pc_coverage_file.js',
 					checks: {
 						statements: {
-							expected: 1,
-							received: 1,
+							expected: 100,
+							received: 100,
 							pass: true,
 							type: 'percentage',
 						},
@@ -512,8 +535,8 @@ describe('checkThreshold', () => {
 					group: 'global',
 					checks: {
 						statements: {
-							expected: 0.5,
-							received: expect.closeTo(0.429, 3),
+							expected: 50,
+							received: 42.85,
 							pass: false,
 							type: 'percentage',
 						},

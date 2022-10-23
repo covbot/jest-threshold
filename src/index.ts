@@ -1,1 +1,1 @@
-export * from './summarizeCoverageMap';
+export * from './checkThreshold';
