@@ -35,8 +35,8 @@ export enum ThresholdType {
 export type ThresholdResult =
 	| {
 			type: ThresholdType.PERCENTAGE | ThresholdType.UNIT;
-			expected: number;
-			received: number;
+			threshold: number;
+			actual: number;
 			pass: boolean;
 	  }
 	| {

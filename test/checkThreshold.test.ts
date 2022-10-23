@@ -95,8 +95,8 @@ describe('checkThreshold', () => {
 				checks: {
 					statements: {
 						pass: false,
-						expected: 100,
-						received: 55.55,
+						threshold: 100,
+						actual: 55.55,
 						type: 'percentage',
 					},
 					branches: {
@@ -136,8 +136,8 @@ describe('checkThreshold', () => {
 				checks: {
 					statements: {
 						pass: false,
-						expected: 100,
-						received: 50,
+						threshold: 100,
+						actual: 50,
 						type: 'percentage',
 					},
 					branches: {
@@ -156,8 +156,8 @@ describe('checkThreshold', () => {
 				checks: {
 					statements: {
 						pass: false,
-						expected: 100,
-						received: 50,
+						threshold: 100,
+						actual: 50,
 						type: 'percentage',
 					},
 					branches: {
@@ -197,8 +197,8 @@ describe('checkThreshold', () => {
 				checks: {
 					statements: {
 						pass: true,
-						expected: 50,
-						received: 50,
+						threshold: 50,
+						actual: 50,
 						type: 'percentage',
 					},
 					branches: {
@@ -217,8 +217,8 @@ describe('checkThreshold', () => {
 				checks: {
 					statements: {
 						pass: true,
-						expected: 50,
-						received: 50,
+						threshold: 50,
+						actual: 50,
 						type: 'percentage',
 					},
 					branches: {
@@ -278,8 +278,8 @@ describe('checkThreshold', () => {
 				checks: {
 					statements: {
 						pass: false,
-						expected: 100,
-						received: 50,
+						threshold: 100,
+						actual: 50,
 						type: 'percentage',
 					},
 					branches: {
@@ -310,8 +310,8 @@ describe('checkThreshold', () => {
 				checks: {
 					statements: {
 						pass: true,
-						expected: 40,
-						received: 50,
+						threshold: 40,
+						actual: 50,
 						type: 'percentage',
 					},
 					branches: {
@@ -378,8 +378,8 @@ describe('checkThreshold', () => {
 					group: './path-test-files/',
 					checks: {
 						statements: {
-							expected: 50,
-							received: 50,
+							threshold: 50,
+							actual: 50,
 							pass: true,
 							type: 'percentage',
 						},
@@ -398,8 +398,8 @@ describe('checkThreshold', () => {
 					group: './path-test/',
 					checks: {
 						statements: {
-							expected: 100,
-							received: 100,
+							threshold: 100,
+							actual: 100,
 							pass: true,
 							type: 'percentage',
 						},
@@ -495,8 +495,8 @@ describe('checkThreshold', () => {
 					group: './path-test-files/100pc_coverage_file.js',
 					checks: {
 						statements: {
-							expected: 100,
-							received: 100,
+							threshold: 100,
+							actual: 100,
 							pass: true,
 							type: 'percentage',
 						},
@@ -515,8 +515,8 @@ describe('checkThreshold', () => {
 					group: './path-test/100pc_coverage_file.js',
 					checks: {
 						statements: {
-							expected: 100,
-							received: 100,
+							threshold: 100,
+							actual: 100,
 							pass: true,
 							type: 'percentage',
 						},
@@ -535,8 +535,8 @@ describe('checkThreshold', () => {
 					group: 'global',
 					checks: {
 						statements: {
-							expected: 50,
-							received: 42.85,
+							threshold: 50,
+							actual: 42.85,
 							pass: false,
 							type: 'percentage',
 						},
