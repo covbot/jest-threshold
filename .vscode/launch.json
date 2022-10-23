@@ -1,0 +1,26 @@
+{
+	"configurations": [
+		{
+			"name": "Debug Tests",
+			"type": "node",
+			"request": "launch",
+			"runtimeArgs": [
+				"--inspect-brk",
+				"${workspaceFolder}/node_modules/jest/bin/jest.js",
+				"--watch",
+				"${input:test}"
+			],
+			"cwd": "${workspaceFolder}",
+			"console": "integratedTerminal",
+			"internalConsoleOptions": "neverOpen"
+		}
+	],
+	"inputs": [
+		{
+			"id": "test",
+			"description": "Test pattern to run:",
+			"default": "",
+			"type": "promptString"
+		}
+	]
+}

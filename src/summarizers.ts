@@ -1,4 +1,5 @@
-import { CoverageStat, FileCoverage, HitMap } from './types';
+import { CoverageStat, HitMap } from './types';
+import type { FileCoverageData } from 'istanbul-lib-coverage';
 
 /**
  * A function, which takes raw information about file coverage, and returns
@@ -6,7 +7,7 @@ import { CoverageStat, FileCoverage, HitMap } from './types';
  * For instance, `statementSummarizer` returns amount of total and covered
  *   statements in file.
  */
-export type Summarizer = (coverage: FileCoverage) => CoverageStat;
+export type Summarizer = (coverage: FileCoverageData) => CoverageStat;
 
 /**
  * This function summarizes hit map, using simple algorithm:

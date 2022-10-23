@@ -1,7 +1,7 @@
+import { FileCoverageData, Range } from 'istanbul-lib-coverage';
 import { branchSummarizer, functionSummarizer, lineSummarizer, statementSummarizer } from '../src/summarizers';
-import { FileCoverage, StatementCoverage } from '../src/types';
 
-const emptyFileCoverage: FileCoverage = {
+const emptyFileCoverage: FileCoverageData = {
 	b: {},
 	branchMap: {},
 	f: {},
@@ -76,7 +76,12 @@ describe('branchSummarizer', () => {
 		expect(
 			branchSummarizer({
 				...emptyFileCoverage,
-				b: [[1, 1], [0, 2], [], [1]],
+				b: {
+					'0': [1, 1],
+					'1': [0, 2],
+					'2': [],
+					'3': [1],
+				},
 			}),
 		).toStrictEqual({
 			total: 5,
@@ -109,23 +114,23 @@ describe('lineSummarizer', () => {
 						start: {
 							line: 1,
 						},
-					} as StatementCoverage,
+					},
 					1: {
 						start: {
 							line: 2,
 						},
-					} as StatementCoverage,
+					},
 					2: {
 						start: {
 							line: 3,
 						},
-					} as StatementCoverage,
+					},
 					3: {
 						start: {
 							line: 2,
 						},
-					} as StatementCoverage,
-				},
+					},
+				} as unknown as Record<string, Range>,
 			}),
 		).toStrictEqual({
 			total: 3,
