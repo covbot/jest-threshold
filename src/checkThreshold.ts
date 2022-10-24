@@ -97,8 +97,8 @@ const checkSingleThresholdGroup = (
 
 			result[key] = {
 				type: ThresholdType.UNIT,
-				threshold,
-				actual: uncoveredUnits,
+				threshold: summary[key].total + threshold,
+				actual: summary[key].covered,
 				pass,
 			};
 		} else {

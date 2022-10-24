@@ -566,4 +566,69 @@ describe('checkThreshold', () => {
 			},
 		});
 	});
+
+	it('should return failure, when threshold by units is not passed', async () => {
+		const result = await checkThreshold(coverageMap, {
+			global: {
+				statements: -3,
+			},
+		});
+
+		expect(result).toStrictEqual({
+			global: {
+				group: 'global',
+				type: 'global',
+				checks: {
+					statements: {
+						pass: false,
+						threshold: 87, // expected statements to be covered (90 - 3)
+						actual: 50, // actual covered statements
+						type: 'unit',
+					},
+					branches: {
+						type: 'unspecified',
+					},
+					functions: {
+						type: 'unspecified',
+					},
+					lines: {
+						type: 'unspecified',
+					},
+				},
+			},
+		});
+	});
+
+	it('should return success, when threshold by units is passed', async () => {
+		const group = './path-test/';
+		const result = await checkThreshold(coverageMap, {
+			[group]: {
+				statements: -1,
+			},
+		});
+
+		expect(result).toStrictEqual({
+			[group]: {
+				group,
+				type: 'path',
+				checks: {
+					statements: {
+						pass: true,
+						threshold: 9, // expected statements to be covered (90 - 3)
+						actual: 10, // actual covered statements
+						type: 'unit',
+					},
+					branches: {
+						type: 'unspecified',
+					},
+					functions: {
+						type: 'unspecified',
+					},
+					lines: {
+						type: 'unspecified',
+					},
+				},
+			},
+		});
+	});
 });
