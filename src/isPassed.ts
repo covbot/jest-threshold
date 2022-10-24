@@ -1,6 +1,6 @@
-import { CheckThresholdResult } from './checkThreshold';
 import { isFailedCheck } from './filters';
-import { flattenThresholdResult, FlatThresholdResult } from './flattenThresholdResult';
+import { flattenThresholdResult, type FlatThresholdResult } from './flattenThresholdResult';
+import type { CheckThresholdResult } from './CheckThresholdResult';
 
 export const isPassed = (result: CheckThresholdResult | Array<FlatThresholdResult>) => {
 	const normalizedResult = Array.isArray(result) ? result : flattenThresholdResult(result);

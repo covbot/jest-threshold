@@ -1,5 +1,5 @@
-import { FlatThresholdResult } from './flattenThresholdResult';
-import { ThresholdType } from './types';
+import { ThresholdType } from './ThresholdType';
+import type { FlatThresholdResult } from './flattenThresholdResult';
 
 /**
  * Check if flattened threshold result entry is a failed check.

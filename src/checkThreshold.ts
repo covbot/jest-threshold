@@ -14,10 +14,13 @@ import {
 	createCoverageSummary,
 	FileCoverage,
 } from 'istanbul-lib-coverage';
-import { Threshold, ThresholdGroupMap, ThresholdGroupResult, ThresholdGroupType, ThresholdType } from './types';
+import { CheckThresholdResult } from './CheckThresholdResult';
+import { ThresholdGroupType } from './ThresholdGroupType';
+import { ThresholdType } from './ThresholdType';
+import type { Threshold } from './Threshold';
+import type { ThresholdGroupMap } from './ThresholdGroupMap';
+import type { ThresholdGroupResult } from './ThresholdGroupResult';
 import type { Config } from '@jest/types';
-
-export type CheckThresholdResult = Record<string, ThresholdGroupResult>;
 
 /**
  * Function, which takes threshold group specifier from configuration, and returns it's absolute path,
