@@ -31,7 +31,10 @@
 		"test:coverage": "pnpm run test --silent --ci --coverage",
 		"prepare": "aqu build",
 		"release": "np",
-		"format": "prettier --write **/*.{js,jsx,ts,tsx,json,yaml}"
+		"format": "prettier --write **/*.{js,jsx,ts,tsx,json,yaml}",
+		"build:docs": "vitepress build docs",
+		"dev:docs": "vitepress dev docs",
+		"serve:docs": "vitepress serve docs"
 	},
 	"devDependencies": {
 		"@babel/core": "^7.19.1",
@@ -49,7 +52,8 @@
 		"np": "^7.6.2",
 		"prettier": "^2.7.1",
 		"ts-jest": "^29.0.3",
-		"typescript": "^4.8.3"
+		"typescript": "^4.8.3",
+		"vitepress": "1.0.0-alpha.22"
 	},
 	"dependencies": {
 		"fast-glob": "^3.2.12",
