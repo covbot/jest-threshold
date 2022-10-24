@@ -1,9 +1,9 @@
 {
 	"name": "@covbot/jest-threshold",
 	"version": "0.0.0",
-	"description": "",
-	"main": "./dist/index.js",
-	"module": "./dist/jest-threshold.esm.js",
+	"description": "Painless validation of jest coverage thresholds.",
+	"main": "./dist/index.cjs.development.js",
+	"module": "./dist/index.esm.js",
 	"types": "./dist/jest-threshold.d.ts",
 	"author": "Artiom Tretjakovas <artiom.tretjakovas2@gmail.com>",
 	"license": "MIT",
