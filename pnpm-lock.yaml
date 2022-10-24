@@ -9,6 +9,7 @@ specifiers:
   '@types/mock-fs': ^4.13.1
   '@types/node': ^18.7.20
   aqu: 0.4.3
+  clean-publish: ^4.0.1
   eslint: ^8.25.0
   fast-glob: ^3.2.12
   istanbul-lib-coverage: ^3.2.0
@@ -17,6 +18,7 @@ specifiers:
   mock-fs: ^5.1.4
   np: ^7.6.2
   prettier: ^2.7.1
+  rimraf: ^3.0.2
   ts-jest: ^29.0.3
   ts-node: ^10.9.1
   typescript: ^4.8.3
@@ -35,12 +37,14 @@ devDependencies:
   '@types/mock-fs': 4.13.1
   '@types/node': 18.7.20
   aqu: 0.4.3_wx2veltjk7hopntkaqspafxmka
+  clean-publish: 4.0.1
   eslint: 8.25.0
   jest: 29.2.1_a2dposzgy7i4bcjs2j2y35unga
   jest-watch-typeahead: 2.2.0_jest@29.2.1
   mock-fs: 5.1.4
   np: 7.6.2
   prettier: 2.7.1
+  rimraf: 3.0.2
   ts-jest: 29.0.3_md3urouwcxcqitrzss3kwva3lq
   ts-node: 10.9.1_xncqeq3xkoqhng77wx5a5ihsty
   typescript: 4.8.3
@@ -3088,6 +3092,17 @@ packages:
     resolution: {integrity: sha512-cOU9usZw8/dXIXKtwa8pM0OTJQuJkxMN6w30csNRUerHfeQ5R6U3kkU/FtJeIf3M202OHfY2U8ccInBG7/xogA==}
     dev: true
 
+  /clean-publish/4.0.1:
+    resolution: {integrity: sha512-6v0bh5kQD5FDlxBgXDVNNc6KmAB7iIP/GHD91q9xsGVZT5XB9Y8TNqB7dL5u9PTZlBeLpBw+A1AseRlEEJLSWA==}
+    engines: {node: '>= 16.0.0'}
+    hasBin: true
+    dependencies:
+      cross-spawn: 7.0.3
+      fast-glob: 3.2.12
+      lilconfig: 2.0.6
+      micromatch: 4.0.5
+    dev: true
+
   /clean-regexp/1.0.0:
     resolution: {integrity: sha512-GfisEZEJvzKrmGWkvfhgzcz/BllN1USeqD2V6tg14OAOgaCD2Z/PUEuxnAZ/nPvmaHRG7a8y77p1T/IRQ4D1Hw==}
     engines: {node: '>=4'}
@@ -5665,6 +5680,11 @@ packages:
       type-check: 0.4.0
     dev: true
 
+  /lilconfig/2.0.6:
+    resolution: {integrity: sha512-9JROoBW7pobfsx+Sq2JsASvCo6Pfo6WWoUW79HuB1BCoBXD4PLWJPqDF6fNj67pqBYTbAHkE57M1kS/+L1neOg==}
+    engines: {node: '>=10'}
+    dev: true
+
   /lines-and-columns/1.2.4:
     resolution: {integrity: sha512-7ylylesZQ/PV29jhEDl3Ufjo6ZX7gCqJr5F7PKrqc93v7fzSymt1BpwEU8nAUXs8qzzvqhbjhK5QZg6Mt/HkBg==}
     dev: true
@@ -7831,3 +7851,5 @@ packages:
       property-expr: 2.0.5
       toposort: 2.0.2
     dev: true
+
+publishDirectory: prepared-package
