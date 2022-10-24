@@ -1,5 +1,5 @@
 import { isFailedCheck, isSpecifiedCheck, isSucceededCheck } from '../src/filters';
-import { ThresholdType } from '../src/types';
+import { ThresholdType } from '../src/ThresholdType';
 
 describe('isFailedCheck', () => {
 	it('should decline unspecified check', () => {

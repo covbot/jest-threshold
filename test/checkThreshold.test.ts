@@ -6,7 +6,7 @@ import { checkThreshold } from '../src/checkThreshold';
 import { resolve } from 'path';
 import mockFs from 'mock-fs';
 import { CoverageMap, CoverageSummary, createCoverageSummary, FileCoverage } from 'istanbul-lib-coverage';
-import { ThresholdResult } from '../src/types';
+import { ThresholdResult } from '../src/ThresholdResult';
 import { isPassed } from '../src/isPassed';
 
 beforeEach(() => {

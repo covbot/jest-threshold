@@ -1,5 +1,6 @@
 import { isPassed } from '../src/isPassed';
-import { ThresholdGroupType, ThresholdType } from '../src/types';
+import { ThresholdGroupType } from '../src/ThresholdGroupType';
+import { ThresholdType } from '../src/ThresholdType';
 
 describe('isPassed', () => {
 	it('should return true, when there are no threshold failures', () => {

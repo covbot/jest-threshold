@@ -1,5 +1,6 @@
 import { flattenThresholdResult } from '../src/flattenThresholdResult';
-import { ThresholdGroupType, ThresholdType } from '../src/types';
+import { ThresholdGroupType } from '../src/ThresholdGroupType';
+import { ThresholdType } from '../src/ThresholdType';
 
 describe('flattenThresholdResult', () => {
 	it('should flatten unidentified result', () => {
