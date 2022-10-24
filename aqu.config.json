@@ -1,5 +1,8 @@
 {
 	"buildOptions": {
 		"platform": "node"
-	}
+	},
+	"cjsMode": "development",
+	"format": ["esm", "cjs"],
+	"name": "index"
 }
