@@ -31,7 +31,10 @@
 		"test:coverage": "pnpm run test --silent --ci --coverage",
 		"prepare": "aqu build",
 		"release": "np",
-		"format": "prettier --write **/*.{js,jsx,ts,tsx,json,yaml}"
+		"format": "prettier --write **/*.{js,jsx,ts,tsx,json,yaml}",
+		"build:docs": "vitepress build docs",
+		"dev:docs": "vitepress dev docs",
+		"serve:docs": "vitepress serve docs"
 	},
 	"devDependencies": {
 		"@babel/core": "^7.19.1",

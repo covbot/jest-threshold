@@ -1,31 +1,32 @@
-# jest-threshold
+# @covbot/jest-threshold
 
-> 
+> Painless validation of jest coverage thresholds.
 
-[![npm version](https://img.shields.io/npm/v/jest-threshold)](https://www.npmjs.com/package/jest-threshold)
-[![npm downloads](https://img.shields.io/npm/dw/jest-threshold)](https://www.npmjs.com/package/jest-threshold)
-[![vulnerabilities](https://img.shields.io/snyk/vulnerabilities/npm/jest-threshold)](https://www.npmjs.com/package/jest-threshold)
+## Introduction
 
-## Install
+asdfasdf
 
-```bash
-npm install jest-threshold
+## Installation
+
+-   Using npm
+
+```
+npm i @covbot/jest-threshold
 ```
 
-Or
+-   Using yarn
 
-```bash
-yarn add jest-threshold
+```
+yarn add @covbot/jest-threshold
 ```
 
-## Usage
+-   Using pnpm
 
-```js
-import { ... } from "jest-threshold";
+```
+yarn add @covbot/jest-threshold
 ```
 
-## License
+## What's next?
 
-MIT © [Artiom Tretjakovas <artiom.tretjakovas2@gmail.com>](https://github.com/ArtiomTr)
-
-[Created with aqu 🌊](https://github.com/ArtiomTr/aqu#readme)
+-   [See getting started page](./getting-started.md)
+-   [See API page](./api.md)
