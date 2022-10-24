@@ -22,14 +22,6 @@ export enum ThresholdType {
 	 * There is nothing to check - threshold was not specified.
 	 */
 	UNSPECIFIED = 'unspecified',
-	/**
-	 * The check was skipped, due to lack of coverage data.
-	 *
-	 * That is a synonym of "failure" for all threshold groups, except "global".
-	 * If global threshold group resulted in "empty" state, this means success, as all other files were
-	 * checked via other threshold groups.
-	 */
-	EMPTY = 'empty',
 }
 
 /**
