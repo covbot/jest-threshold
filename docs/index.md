@@ -1,0 +1,31 @@
+# jest-threshold
+
+> 
+
+[![npm version](https://img.shields.io/npm/v/jest-threshold)](https://www.npmjs.com/package/jest-threshold)
+[![npm downloads](https://img.shields.io/npm/dw/jest-threshold)](https://www.npmjs.com/package/jest-threshold)
+[![vulnerabilities](https://img.shields.io/snyk/vulnerabilities/npm/jest-threshold)](https://www.npmjs.com/package/jest-threshold)
+
+## Install
+
+```bash
+npm install jest-threshold
+```
+
+Or
+
+```bash
+yarn add jest-threshold
+```
+
+## Usage
+
+```js
+import { ... } from "jest-threshold";
+```
+
+## License
+
+MIT © [Artiom Tretjakovas <artiom.tretjakovas2@gmail.com>](https://github.com/ArtiomTr)
+
+[Created with aqu 🌊](https://github.com/ArtiomTr/aqu#readme)
