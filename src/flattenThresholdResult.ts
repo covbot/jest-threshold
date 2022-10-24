@@ -1,6 +1,7 @@
 import { CoverageSummaryData } from 'istanbul-lib-coverage';
-import { ThresholdGroupType, type ThresholdResult } from './types';
-import type { CheckThresholdResult } from './checkThreshold';
+import { ThresholdGroupType } from './ThresholdGroupType';
+import type { CheckThresholdResult } from './CheckThresholdResult';
+import type { ThresholdResult } from './ThresholdResult';
 
 /**
  * Entry of flattened CheckThresholdResult array.
