@@ -1,7 +1,6 @@
 import { defineConfig } from 'vitepress';
 
 export default defineConfig({
-	cleanUrls: 'with-subfolders',
 	title: 'covbot',
 	description: 'Painless validation of jest coverage thresholds.',
 	base: '/jest-threshold/',
