@@ -4,7 +4,7 @@
 	"description": "Painless validation of jest coverage thresholds.",
 	"main": "./dist/index.cjs.development.js",
 	"module": "./dist/index.esm.js",
-	"types": "./dist/jest-threshold.d.ts",
+	"types": "./dist/index.d.ts",
 	"author": "Artiom Tretjakovas <artiom.tretjakovas2@gmail.com>",
 	"license": "MIT",
 	"homepage": "https://github.com/covbot/jest-threshold#readme",
