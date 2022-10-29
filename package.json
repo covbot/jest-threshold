@@ -1,6 +1,6 @@
 {
 	"name": "@covbot/jest-threshold",
-	"version": "0.0.0",
+	"version": "0.0.1",
 	"description": "Painless validation of jest coverage thresholds.",
 	"main": "./dist/index.cjs.development.js",
 	"module": "./dist/index.esm.js",
