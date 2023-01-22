@@ -4,10 +4,10 @@
  * It was refactored a bit to suit project's needs.
  */
 
-import fs from 'fs';
 import path from 'path';
-import fastGlob from 'fast-glob';
+import fastGlob, { FileSystemAdapter } from 'fast-glob';
 import { CoverageMap, CoverageSummary, createCoverageSummary, FileCoverage } from 'istanbul-lib-coverage';
+import { Volume, createFsFromVolume } from 'memfs';
 import { CoverageGroupSummary } from './CoverageGroupSummary';
 import { Threshold } from './Threshold';
 import { ThresholdGroupType } from './ThresholdGroupType';
@@ -43,9 +43,14 @@ const getAbsoluteThresholdGroup = (thresholdGroup: string): string => {
 
 /**
  * Create a "glob" function, but with cache.
- * Used to prevent unnecessary calls to file system.
+ * Initially, in jest codebase this code was used to perform glob in real filesystem.
+ * However, as we can get all files already (from coverageMap), we can create in-memory filesystem,
+ * and perform globbing there. Potentially, that would improve performance.
  */
-const createGlobWithCache = () => {
+const createGlobWithCache = (coverageFiles: string[]) => {
+	const volume = Volume.fromJSON(Object.fromEntries(coverageFiles.map((filename) => [filename, ''])), process.cwd());
+	const fs = createFsFromVolume(volume);
+
 	const cacheStore = new Map<string, string[]>();
 
 	return async (pattern: string) => {
@@ -53,7 +58,7 @@ const createGlobWithCache = () => {
 			return cacheStore.get(pattern)!;
 		}
 
-		const files = await fastGlob(pattern.replace(/\\/g, '/'), { fs });
+		const files = await fastGlob(pattern.replace(/\\/g, '/'), { fs: fs as Partial<FileSystemAdapter> });
 		const resolvedFiles = files.map((file) => path.resolve(file));
 		cacheStore.set(pattern, resolvedFiles);
 		return resolvedFiles;
@@ -86,7 +91,7 @@ export const getGroupedCoverageSummary = async (
 	threshold: Threshold,
 ): Promise<Record<string, CoverageGroupSummary>> => {
 	const coveredFiles = coverageMap.files();
-	const glob = createGlobWithCache();
+	const glob = createGlobWithCache(coveredFiles);
 
 	const result: Record<string, CoverageGroupSummary> = {};
 

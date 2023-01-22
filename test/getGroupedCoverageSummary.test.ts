@@ -3,31 +3,32 @@
  * Altered to suit project's needs.
  */
 import { resolve } from 'path';
-import mockFs from 'mock-fs';
 import { CoverageMap, CoverageSummary, createCoverageSummary, FileCoverage } from 'istanbul-lib-coverage';
 import { getGroupedCoverageSummary } from '../src/getGroupedCoverageSummary';
 
-beforeEach(() => {
-	mockFs({
-		[`${process.cwd()}/path-test-files`]: {
-			'000pc_coverage_file.js': '',
-			'050pc_coverage_file.js': '',
-			'100pc_coverage_file.js': '',
-			'full_path_file.js': '',
-			'glob-path': {
-				'file1.js': '',
-				'file2.js': '',
-			},
-			'non_covered_file.js': '',
-			'relative_path_file.js': '',
-		},
-		[`${process.cwd()}/path-test`]: {
-			'100pc_coverage_file.js': '',
-		},
-	});
-});
+// fs-mocking disabled, see in getGroupedCoverageSummary.ts, function createGlobWithCache
+// 
+// beforeEach(() => {
+// 	mockFs({
+// 		[`${process.cwd()}/path-test-files`]: {
+// 			'000pc_coverage_file.js': '',
+// 			'050pc_coverage_file.js': '',
+// 			'100pc_coverage_file.js': '',
+// 			'full_path_file.js': '',
+// 			'glob-path': {
+// 				'file1.js': '',
+// 				'file2.js': '',
+// 			},
+// 			'non_covered_file.js': '',
+// 			'relative_path_file.js': '',
+// 		},
+// 		[`${process.cwd()}/path-test`]: {
+// 			'100pc_coverage_file.js': '',
+// 		},
+// 	});
+// });
 
-afterEach(() => mockFs.restore());
+// afterEach(() => mockFs.restore());
 
 const emptyCoverage = {
 	covered: 0,
@@ -378,6 +379,18 @@ describe('getGroupedCoverageSummary', () => {
 						},
 					},
 					[resolve(process.cwd(), 'path-test-files/full_path_file.js')]: {
+						branchesTrue: expect.anything(),
+						branches: emptyCoverage,
+						functions: emptyCoverage,
+						lines: emptyCoverage,
+						statements: {
+							covered: 5,
+							pct: 50,
+							skipped: 0,
+							total: 10,
+						},
+					},
+					[resolve(process.cwd(), 'path-test-files/covered_file_without_threshold.js')]: {
 						branchesTrue: expect.anything(),
 						branches: emptyCoverage,
 						functions: emptyCoverage,
