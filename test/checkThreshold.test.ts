@@ -4,33 +4,31 @@
  */
 import { checkThreshold } from '../src/checkThreshold';
 import { resolve } from 'path';
-import mockFs from 'mock-fs';
 import { CoverageMap, CoverageSummary, createCoverageSummary, FileCoverage } from 'istanbul-lib-coverage';
-import { ThresholdResult } from '../src/ThresholdResult';
 import { isPassed } from '../src/isPassed';
 import { getGroupedCoverageSummary } from '../src/getGroupedCoverageSummary';
 
-beforeEach(() => {
-	mockFs({
-		[`${process.cwd()}/path-test-files`]: {
-			'000pc_coverage_file.js': '',
-			'050pc_coverage_file.js': '',
-			'100pc_coverage_file.js': '',
-			'full_path_file.js': '',
-			'glob-path': {
-				'file1.js': '',
-				'file2.js': '',
-			},
-			'non_covered_file.js': '',
-			'relative_path_file.js': '',
-		},
-		[`${process.cwd()}/path-test`]: {
-			'100pc_coverage_file.js': '',
-		},
-	});
-});
+// beforeEach(() => {
+// 	mockFs({
+// 		[`${process.cwd()}/path-test-files`]: {
+// 			'000pc_coverage_file.js': '',
+// 			'050pc_coverage_file.js': '',
+// 			'100pc_coverage_file.js': '',
+// 			'full_path_file.js': '',
+// 			'glob-path': {
+// 				'file1.js': '',
+// 				'file2.js': '',
+// 			},
+// 			'non_covered_file.js': '',
+// 			'relative_path_file.js': '',
+// 		},
+// 		[`${process.cwd()}/path-test`]: {
+// 			'100pc_coverage_file.js': '',
+// 		},
+// 	});
+// });
 
-afterEach(() => mockFs.restore());
+// afterEach(() => mockFs.restore());
 
 describe('checkThreshold', () => {
 	let coverageMap: CoverageMap;
