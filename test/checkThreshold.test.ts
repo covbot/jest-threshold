@@ -8,6 +8,7 @@ import mockFs from 'mock-fs';
 import { CoverageMap, CoverageSummary, createCoverageSummary, FileCoverage } from 'istanbul-lib-coverage';
 import { ThresholdResult } from '../src/ThresholdResult';
 import { isPassed } from '../src/isPassed';
+import { getGroupedCoverageSummary } from '../src/getGroupedCoverageSummary';
 
 beforeEach(() => {
 	mockFs({
@@ -85,11 +86,12 @@ describe('checkThreshold', () => {
 	});
 
 	it('should return a failure for global group, when threshold is not met', async () => {
-		const result = await checkThreshold(coverageMap, {
+		const threshold = {
 			global: {
 				statements: 100,
 			},
-		});
+		};
+		const result = checkThreshold(await getGroupedCoverageSummary(coverageMap, threshold), threshold);
 
 		expect(result).toStrictEqual({
 			global: {
@@ -120,7 +122,7 @@ describe('checkThreshold', () => {
 		const absolutePath = `${resolve(process.cwd())}/path-test-files/full_path_file.js`;
 		const relativePath = './path-test-files/relative_path_file.js';
 
-		const result = await checkThreshold(coverageMap, {
+		const threshold = {
 			global: {
 				statements: 100,
 			},
@@ -130,7 +132,9 @@ describe('checkThreshold', () => {
 			[relativePath]: {
 				statements: 100,
 			},
-		});
+		};
+
+		const result = checkThreshold(await getGroupedCoverageSummary(coverageMap, threshold), threshold);
 
 		expect(result).toStrictEqual({
 			global: expect.anything(),
@@ -183,7 +187,7 @@ describe('checkThreshold', () => {
 		const absolutePath = `${resolve(process.cwd())}/path-test-files/full_path_file.js`;
 		const relativePath = './path-test-files/relative_path_file.js';
 
-		const result = await checkThreshold(coverageMap, {
+		const threshold = {
 			global: {
 				statements: 50,
 			},
@@ -193,7 +197,9 @@ describe('checkThreshold', () => {
 			[relativePath]: {
 				statements: 50,
 			},
-		});
+		}
+
+		const result = checkThreshold(await getGroupedCoverageSummary(coverageMap, threshold), threshold);
 
 		expect(result).toStrictEqual({
 			global: expect.anything(),
@@ -244,11 +250,12 @@ describe('checkThreshold', () => {
 
 	it('should return a special failure, when threshold is not met for non-covered file', async () => {
 		const filepath = 'path-test-files/non_covered_file.js';
-		const result = await checkThreshold(coverageMap, {
+		const threshold = {
 			[filepath]: {
 				statements: 100,
 			},
-		});
+		}
+		const result = checkThreshold(await getGroupedCoverageSummary(coverageMap, threshold), threshold);
 
 		expect(result).toStrictEqual({
 			[filepath]: {
@@ -260,11 +267,12 @@ describe('checkThreshold', () => {
 
 	it('should return a failure, when threshold is not met for directory', async () => {
 		const filepath = './path-test-files/glob-path/';
-		const result = await checkThreshold(coverageMap, {
+		const threshold = {
 			[filepath]: {
 				statements: 100,
 			},
-		});
+		};
+		const result = checkThreshold(await getGroupedCoverageSummary(coverageMap, threshold), threshold);
 
 		expect(result).toStrictEqual({
 			[filepath]: {
@@ -293,11 +301,12 @@ describe('checkThreshold', () => {
 
 	it('should return a success, when threshold is met for a directory', async () => {
 		const filepath = './path-test-files/glob-path/';
-		const result = await checkThreshold(coverageMap, {
+		const threshold = {
 			[filepath]: {
 				statements: 40,
 			},
-		});
+		};
+		const result = checkThreshold(await getGroupedCoverageSummary(coverageMap, threshold), threshold);
 
 		expect(result).toStrictEqual({
 			[filepath]: {
@@ -326,11 +335,12 @@ describe('checkThreshold', () => {
 
 	it('should mark a special failure, when there is no coverage data for a threshold', async () => {
 		const filepath = './path/doesnt/exist';
-		const result = await checkThreshold(coverageMap, {
+		const threshold = {
 			[filepath]: {
 				statements: 40,
 			},
-		});
+		};
+		const result = checkThreshold(await getGroupedCoverageSummary(coverageMap, threshold), threshold);
 
 		expect(result).toStrictEqual({
 			[filepath]: {
@@ -344,7 +354,7 @@ describe('checkThreshold', () => {
 		'should return a success, when global threshold group is empty because PATH and GLOB threshold groups have' +
 			'matched all the files in the coverage data.',
 		async () => {
-			const result = await checkThreshold(coverageMap, {
+			const threshold = {
 				['./path-test-files/']: {
 					statements: 50,
 				},
@@ -354,7 +364,8 @@ describe('checkThreshold', () => {
 				global: {
 					statements: 100,
 				},
-			});
+			};
+			const result = checkThreshold(await getGroupedCoverageSummary(coverageMap, threshold), threshold);
 
 			expect(result).toStrictEqual({
 				['./path-test-files/']: {
@@ -423,7 +434,7 @@ describe('checkThreshold', () => {
 			};
 		});
 
-		const result = await checkThreshold(coverageMap, covThreshold);
+		const result = checkThreshold(await getGroupedCoverageSummary(coverageMap, covThreshold), covThreshold);
 
 		expect(isPassed(result)).toBeTruthy();
 	});
@@ -432,7 +443,7 @@ describe('checkThreshold', () => {
 		'should subtract coverage data for matching paths from overall coverage, when globs or paths are' +
 			'specified alongside global',
 		async () => {
-			const result = await checkThreshold(coverageMap, {
+			const threshold = {
 				'./path-test-files/100pc_coverage_file.js': {
 					statements: 100,
 				},
@@ -442,7 +453,8 @@ describe('checkThreshold', () => {
 				global: {
 					statements: 50,
 				},
-			});
+			};
+			const result = checkThreshold(await getGroupedCoverageSummary(coverageMap, threshold), threshold);
 
 			expect(result).toStrictEqual({
 				'./path-test-files/100pc_coverage_file.js': {
@@ -514,11 +526,12 @@ describe('checkThreshold', () => {
 
 	it('should unwrap glob pattern, and output threshold checks on each file, matching glob', async () => {
 		const filepath = './path-test-files/glob-path/*.js';
-		const result = await checkThreshold(coverageMap, {
+		const threshold = {
 			[filepath]: {
 				statements: 100,
 			},
-		});
+		};
+		const result = checkThreshold(await getGroupedCoverageSummary(coverageMap, threshold), threshold);
 
 		const file1 = resolve(process.cwd(), './path-test-files/glob-path/file1.js');
 		const file2 = resolve(process.cwd(), './path-test-files/glob-path/file2.js');
@@ -568,11 +581,12 @@ describe('checkThreshold', () => {
 	});
 
 	it('should return failure, when threshold by units is not passed', async () => {
-		const result = await checkThreshold(coverageMap, {
+		const threshold = {
 			global: {
 				statements: -3,
 			},
-		});
+		};
+		const result = checkThreshold(await getGroupedCoverageSummary(coverageMap, threshold), threshold);
 
 		expect(result).toStrictEqual({
 			global: {
@@ -601,11 +615,12 @@ describe('checkThreshold', () => {
 
 	it('should return success, when threshold by units is passed', async () => {
 		const group = './path-test/';
-		const result = await checkThreshold(coverageMap, {
+		const threshold = {
 			[group]: {
 				statements: -1,
 			},
-		});
+		};
+		const result = checkThreshold(await getGroupedCoverageSummary(coverageMap, threshold), threshold);
 
 		expect(result).toStrictEqual({
 			[group]: {
