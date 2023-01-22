@@ -112,11 +112,11 @@ const checkSingleThresholdGroup = (
 			 * The rounded value is used to ensure predictable logic - it is better to compare what user actually sees.
 			 *
 			 * For instance:
-			 *   We have 3 statements, where only 1 is covered. User will see 33.33% on the screen. User specifies
-			 *   threshold for statements to `33.33`. By comparing rounded values, we don't have any issue - what
-			 *   user sees, that they get. However, if we skip rounding, the actual coverage percentage is 0 dot 3
-			 *   in period, which is slightly more than value, specified by user. In that case, user will see the
-			 *   message: "Coverage threshold check failed: expected at least 33.33%, but got 33.33%".
+			 *   We have 3 statements, where only 2 are covered. User will see 66.67% on the screen. User specifies
+			 *   threshold for statements to `66.67`. By comparing rounded values, we don't have any issue - what
+			 *   user sees, that they get. However, if we skip rounding, the actual coverage percentage is 0 dot 6
+			 *   in period, which is slightly less than value, specified by user. In that case, user will see the
+			 *   message: "Coverage threshold check failed: expected at least 66.67%, but got 66.67%".
 			 */
 			const pass = summary[key].pct >= threshold;
 			result[key] = {
