@@ -6,7 +6,6 @@ specifiers:
   '@sirse-dev/eslint-config': ^1.0.12
   '@types/istanbul-lib-coverage': ^2.0.4
   '@types/jest': ^29.0.3
-  '@types/mock-fs': ^4.13.1
   '@types/node': ^18.7.20
   aqu: 0.4.3
   clean-publish: ^4.0.1
@@ -35,7 +34,6 @@ devDependencies:
   '@sirse-dev/eslint-config': 1.0.12_jnzn4tb3mc4gbp4pus6642vcs4
   '@types/istanbul-lib-coverage': 2.0.4
   '@types/jest': 29.0.3
-  '@types/mock-fs': 4.13.1
   '@types/node': 18.7.20
   aqu: 0.4.3_wx2veltjk7hopntkaqspafxmka
   clean-publish: 4.0.1
@@ -2156,12 +2154,6 @@ packages:
 
   /@types/minimist/1.2.2:
     resolution: {integrity: sha512-jhuKLIRrhvCPLqwPcx6INqmKeiA5EWrsCOPhrlFSrbrmU4ZMPjj5Ul/oLCMDO98XRUIwVm78xICz4EPCektzeQ==}
-    dev: true
-
-  /@types/mock-fs/4.13.1:
-    resolution: {integrity: sha512-m6nFAJ3lBSnqbvDZioawRvpLXSaPyn52Srf7OfzjubYbYX8MTUdIgDxQl0wEapm4m/pNYSd9TXocpQ0TvZFlYA==}
-    dependencies:
-      '@types/node': 18.7.20
     dev: true
 
   /@types/node/18.7.20:
