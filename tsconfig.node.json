@@ -1,0 +1,10 @@
+{
+	"compilerOptions": {
+		"allowJs": true,
+		"moduleResolution": "node16",
+		"module": "node16",
+		"composite": true,
+		"emitDeclarationOnly": true
+	},
+	"include": ["*.config.js", ".clean-publish.js"]
+}
