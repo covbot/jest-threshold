@@ -23,6 +23,7 @@
 		"format:syncpack": "syncpack format",
 		"lint": "eslint .",
 		"lint:fix": "aqu lint --fix",
+		"postpublish": "rimraf ./prepared-package",
 		"prepare": "aqu build",
 		"prepublishOnly": "rimraf ./prepared-package && clean-publish",
 		"release": "np",

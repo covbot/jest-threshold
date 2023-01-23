@@ -1,6 +1,6 @@
 {
-    "compilerOptions": {
-        "composite": true,
+	"compilerOptions": {
+		"composite": true,
 		"target": "es6",
 		"module": "ES2015",
 		"declaration": true,
@@ -11,6 +11,6 @@
 		"skipLibCheck": true,
 		"allowSyntheticDefaultImports": true,
 		"moduleResolution": "node"
-    },
+	},
 	"include": ["test"]
 }
