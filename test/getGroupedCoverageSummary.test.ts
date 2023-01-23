@@ -7,7 +7,7 @@ import { CoverageMap, CoverageSummary, createCoverageSummary, FileCoverage } fro
 import { getGroupedCoverageSummary } from '../src/getGroupedCoverageSummary';
 
 // fs-mocking disabled, see in getGroupedCoverageSummary.ts, function createGlobWithCache
-// 
+//
 // beforeEach(() => {
 // 	mockFs({
 // 		[`${process.cwd()}/path-test-files`]: {

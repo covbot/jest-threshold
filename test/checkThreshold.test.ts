@@ -195,7 +195,7 @@ describe('checkThreshold', () => {
 			[relativePath]: {
 				statements: 50,
 			},
-		}
+		};
 
 		const result = checkThreshold(await getGroupedCoverageSummary(coverageMap, threshold), threshold);
 
@@ -252,7 +252,7 @@ describe('checkThreshold', () => {
 			[filepath]: {
 				statements: 100,
 			},
-		}
+		};
 		const result = checkThreshold(await getGroupedCoverageSummary(coverageMap, threshold), threshold);
 
 		expect(result).toStrictEqual({
